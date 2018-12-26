@@ -1,0 +1,25 @@
+---
+
+- name: Copy /etc/systemd/logind.conf to disable sleep on lid close
+  copy:
+    src: logind.conf
+    dest: /etc/systemd/logind.conf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Copy /etc/acpi/events/lm_lid to disable screen on lid close (step1)
+  copy:
+    src: lm_lid
+    dest: /etc/acpi/events/lm_lid
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Copy /etc/acpi/lid.sh to disable screen on lid close (step2)
+  template: 
+    src: lid.sh.j2
+    dest: /etc/acpi/lid.sh
+    owner: root
+    group: root
+    mode: 0755

@@ -1,0 +1,36 @@
+- hosts: docker-ce
+  become: true
+  vars:
+    docker_sdk: true
+    docker_compose: true
+    primary_username: torndorff
+  roles:
+    - w530
+    - haxorof.docker-ce
+  post_tasks:
+    - name: Test hello container
+      become: yes
+      docker_container:
+        name: hello
+        image: hello-world
+
+    - name: Test hello service
+      become: yes
+      docker_service:
+        project_name: hello
+        definition:
+          version: '3'
+          services:
+            hello:
+              image: "hello-world"
+
+    - name: Add group docker
+      group:
+        name: docker
+        state: present
+
+    - name: Add primary username to docker group
+      user:
+        name: "{{ primary_username }}"
+        group: docker
+        append: yes
